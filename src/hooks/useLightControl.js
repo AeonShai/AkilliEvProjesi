@@ -10,29 +10,26 @@ export const useLightControl = () => {
       const response = await apiClient.get('/status');
       setLightStatus(response.data);
     } catch (err) {
-      setError("Bağlantı Hatası: Veri çekilemedi.");
+      setError("Bağlantı Hatası: Lamba durumuna ulaşılamıyor.");
     }
   };
 
   const updateLight = async (params) => {
     try {
-      // ISO 25010: Güvenilirlik - Sınır kontrolü
+      // Parlaklık sınır kontrolü
       if (params.brightness !== undefined) {
         params.brightness = Math.max(0, Math.min(100, params.brightness));
       }
       
+      // json-server /status endpoint'ine doğrudan PATCH gönderir
       const response = await apiClient.patch('/status', params);
-      let data = response.data;
-      if (data && typeof data === 'object' && 'item' in data) {
-        data = data.item;
-      }
-      if (data && typeof data === 'object' && (('isLightOn' in data) || ('brightness' in data) || ('deviceName' in data))) {
-        setLightStatus(data);
-      } else {
-        setLightStatus(prev => ({ ...prev, ...params }));
-      }
+      
+      // Başarılı ise yerel durumu güncelle
+      setLightStatus(prev => ({ ...prev, ...response.data }));
+      setError(null); // Hata varsa temizle
     } catch (err) {
-      setError("Komut iletilemedi.");
+      setError("Komut iletilemedi. Sunucunun açık olduğundan emin olun.");
+      console.log("Update Error:", err);
     }
   };
 

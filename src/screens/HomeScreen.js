@@ -7,30 +7,35 @@ const HomeScreen = () => {
 
   if (!lightStatus && !error) return <ActivityIndicator size="large" style={styles.center} />;
 
+  // Güvenli veri erişimi için yardımcı değişkenler
+  const isLightOn = lightStatus?.isLightOn || false;
+  const brightness = lightStatus?.brightness || 0;
+  const deviceName = lightStatus?.deviceName || "Akıllı Lamba";
+
   return (
-    <View style={[styles.container, { backgroundColor: lightStatus?.isLightOn ? '#FFF9C4' : '#ECEFF1' }]}>
-      <Text style={styles.title}>{lightStatus?.deviceName || "Cihaz"}</Text>
+    <View style={[styles.container, { backgroundColor: isLightOn ? '#FFF9C4' : '#ECEFF1' }]}>
+      <Text style={styles.title}>{deviceName}</Text>
       
       <View style={styles.card}>
         <Text style={styles.statusText}>
-          Durum: {lightStatus?.isLightOn ? 'AÇIK' : 'KAPALI'}
+          Durum: {isLightOn ? 'AÇIK' : 'KAPALI'}
         </Text>
-        <Text style={styles.statusText}>Parlaklık: %{lightStatus?.brightness}</Text>
+        <Text style={styles.statusText}>Parlaklık: %{brightness}</Text>
       </View>
 
       <TouchableOpacity 
-        style={[styles.button, { backgroundColor: lightStatus?.isLightOn ? '#F44336' : '#4CAF50' }]}
-        onPress={() => updateLight({ isLightOn: !lightStatus.isLightOn })}
+        style={[styles.button, { backgroundColor: isLightOn ? '#F44336' : '#4CAF50' }]}
+        onPress={() => updateLight({ isLightOn: !isLightOn })}
       >
-        <Text style={styles.buttonText}>{lightStatus?.isLightOn ? 'Kapat' : 'Aç'}</Text>
+        <Text style={styles.buttonText}>{isLightOn ? 'Kapat' : 'Aç'}</Text>
       </TouchableOpacity>
 
       <View style={styles.brightnessControls}>
-        <TouchableOpacity onPress={() => updateLight({ brightness: lightStatus.brightness - 10 })} style={styles.smallButton}>
+        <TouchableOpacity onPress={() => updateLight({ brightness: brightness - 10 })} style={styles.smallButton}>
           <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
         <Text style={styles.brightnessLabel}>Parlaklık Ayarı</Text>
-        <TouchableOpacity onPress={() => updateLight({ brightness: lightStatus.brightness + 10 })} style={styles.smallButton}>
+        <TouchableOpacity onPress={() => updateLight({ brightness: brightness + 10 })} style={styles.smallButton}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
