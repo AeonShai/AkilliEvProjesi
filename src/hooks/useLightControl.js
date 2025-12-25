@@ -1,36 +1,39 @@
 import { useState, useEffect } from 'react';
-import apiClient from '../api/apiClient';
 
+// Sahte (Mock) Lamba Kontrolü - Sunucu bağımsız çalışır
 export const useLightControl = () => {
-  const [lightStatus, setLightStatus] = useState(null);
+  // Başlangıç değerleri (Sahte lamba verisi)
+  const [lightStatus, setLightStatus] = useState({
+    isLightOn: false,
+    brightness: 50,
+    deviceName: "Simüle Edilen Lamba"
+  });
+  
   const [error, setError] = useState(null);
 
-  const fetchStatus = async () => {
-    try {
-      const response = await apiClient.get('/status');
-      setLightStatus(response.data);
-    } catch (err) {
-      setError("Bağlantı Hatası: Lamba durumuna ulaşılamıyor.");
-    }
+  // Veri çekme simülasyonu
+  const fetchStatus = () => {
+    console.log("Simülasyon: Veri yerelden yüklendi.");
   };
 
-  const updateLight = async (params) => {
-    try {
-      // Parlaklık sınır kontrolü
+  // Güncelleme simülasyonu (API'ye gitmez, sadece ekranı günceller)
+  const updateLight = (params) => {
+    setLightStatus(prev => {
+      let newBrightness = prev.brightness;
+      
       if (params.brightness !== undefined) {
-        params.brightness = Math.max(0, Math.min(100, params.brightness));
+        newBrightness = Math.max(0, Math.min(100, params.brightness));
       }
-      
-      // json-server /status endpoint'ine doğrudan PATCH gönderir
-      const response = await apiClient.patch('/status', params);
-      
-      // Başarılı ise yerel durumu güncelle
-      setLightStatus(prev => ({ ...prev, ...response.data }));
-      setError(null); // Hata varsa temizle
-    } catch (err) {
-      setError("Komut iletilemedi. Sunucunun açık olduğundan emin olun.");
-      console.log("Update Error:", err);
-    }
+
+      const newState = {
+        ...prev,
+        ...params,
+        brightness: newBrightness
+      };
+
+      console.log("Simülasyon Güncellendi:", newState);
+      return newState;
+    });
   };
 
   useEffect(() => { fetchStatus(); }, []);

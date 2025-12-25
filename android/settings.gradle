@@ -1,0 +1,16 @@
+rootProject.name = 'AkilliEvApp'
+
+// Dosya yolunu settingsDir (android klasörü) üzerinden kesinleştiriyoruz
+def nativeModulesGradle = new File(settingsDir, '../node_modules/@react-native-community/cli-platform-android/native_modules.gradle')
+
+if (nativeModulesGradle.exists()) {
+    apply from: nativeModulesGradle
+} else {
+    // Eğer üstteki yol çalışmazsa alternatif yolu dene
+    apply from: new File(settingsDir, '../node_modules/react-native/scripts/native_modules.gradle')
+}
+
+applyNativeModulesSettingsGradle(settings)
+
+include ':app'
+includeBuild(new File(settingsDir, '../node_modules/@react-native/gradle-plugin'))
