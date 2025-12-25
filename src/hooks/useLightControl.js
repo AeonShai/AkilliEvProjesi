@@ -22,7 +22,15 @@ export const useLightControl = () => {
       }
       
       const response = await apiClient.patch('/status', params);
-      setLightStatus(response.data);
+      let data = response.data;
+      if (data && typeof data === 'object' && 'item' in data) {
+        data = data.item;
+      }
+      if (data && typeof data === 'object' && (('isLightOn' in data) || ('brightness' in data) || ('deviceName' in data))) {
+        setLightStatus(data);
+      } else {
+        setLightStatus(prev => ({ ...prev, ...params }));
+      }
     } catch (err) {
       setError("Komut iletilemedi.");
     }

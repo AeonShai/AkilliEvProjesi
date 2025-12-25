@@ -1,8 +1,11 @@
 {
   "status": {
-    "isLightOn": false,
-    "brightness": 50,
-    "deviceName": "Salon Lambası",
-    "lastUpdate": "2025-10-11T12:00:00Z"
+    "item": {
+      "isLightOn": false,
+      "brightness": 50,
+      "deviceName": "Salon Lambası",
+      "lastUpdate": "2025-10-11T12:00:00Z"
+    },
+    "brightness": 60
   }
 }
